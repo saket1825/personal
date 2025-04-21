@@ -4,32 +4,31 @@ import java.util.*;
 
 public class LC127 {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        if (!wordList.contains(endWord)) {
+        Set<String> set = new HashSet<>(wordList);
+        if (!set.contains(endWord)) {
             return 0;
         }
-        Set<String> words = new HashSet<>();
-        words.add(beginWord);
-        words.addAll(wordList);
-
+        set.add(beginWord);
+        set.add(endWord);
+        int changes = 0;
         Queue<String> q = new LinkedList<>();
         q.add(beginWord);
-        int changes = 1;
         while (!q.isEmpty()) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                String polledWord = q.poll();
-                int m = polledWord.length();
-                if (polledWord.equals(endWord)) {
-                    return changes;
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                String popped = q.poll();
+                int m = popped.length();
+                if (popped.equals(endWord)) {
+                    return changes + 1;
                 }
                 for (int j = 0; j < m; j++) {
                     for (char ch = 'a'; ch <= 'z'; ch++) {
-                        char arr[] = polledWord.toCharArray();
+                        char[] arr = popped.toCharArray();
                         arr[j] = (char) ch;
-                        String str = new String(arr);
-                        if (words.contains(str)) {
-                            words.remove(str);
-                            q.add(str);
+                        String newString = new String(arr);
+                        if (wordList.contains(newString)) {
+                            q.add(newString);
+                            set.remove(newString);
                         }
                     }
                 }
